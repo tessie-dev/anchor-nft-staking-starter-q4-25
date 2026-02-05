@@ -51,6 +51,9 @@ impl<'info> Claim<'info> {
         //TODO
         let points = self.user_account.points;
 
+        let mint_decimals = self.reward_mint.decimals;
+        let amount = (points as u64).saturating_mul(10u64.pow(mint_decimals as u32));
+
         let signer_seeds: &[&[&[u8]]] = &[&[
             b"config",
             &[self.config.bump],
@@ -66,7 +69,7 @@ impl<'info> Claim<'info> {
                 },
                 signer_seeds,
             ),
-            points as u64,
+            amount,
         )?;
 
         self.user_account.points = 0;
